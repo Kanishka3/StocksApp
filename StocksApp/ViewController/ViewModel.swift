@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ViewModel {
+open class ViewModel {
     
     public private(set) var collection = Observable<[Holding]>(value: [])
     
@@ -22,19 +22,26 @@ class ViewModel {
         }.resume()
     }
     
+    public init() {}
+    
     
     //Current value = sum of (Last traded price * quantity of holding ) of all the holdings
-    var currentValue: Double {
+    public var currentValue: Double {
         collection.value.reduce(0) { (accumulator, holding) in
             accumulator + (holding.ltp * Double(holding.quantity))
         }
     }
     
     //Total investment = sum of (Average Price * quantity of holding ) of all the holdings
-    var totalInvestment: Double {
+    public var totalInvestment: Double {
         collection.value.reduce(0) { (accumulator, holding) in
             accumulator + (holding.avgPrice * Double(holding.quantity))
         }
+    }
+    
+    
+    public func pnl(_ holding: Holding) -> Double {
+        (holding.ltp * Double(holding.quantity)) - (holding.avgPrice * Double(holding.quantity))
     }
     
     // Total PNL = Current value - Total Investment
@@ -44,7 +51,7 @@ class ViewModel {
     }
     
     //Today’s PNL = sum of ((Close - LTP ) * quantity) of all the holdings
-     var todaysPnl: (value: Double, isProfit: Bool) {
+     public var todaysPnl: (value: Double, isProfit: Bool) {
        let value = collection.value.reduce(0) { totalPNL, holding in
             let pnl = (holding.close - holding.ltp) * Double(holding.quantity)
            return totalPNL + pnl
@@ -57,13 +64,13 @@ class ViewModel {
             .init(leftText: GlobalConstants.currentValue, rightText: .rupee(currentValue)),
             .init(leftText: GlobalConstants.totalInvestment, rightText: .rupee(totalInvestment)),
             .init(leftText: GlobalConstants.totalPnl,
-                  rightText: .rupee(totalPNL.value),
-                  rightTextColor: totalPNL.isProfit ? .green : .red)
+                  rightText: .rupee(todaysPnl.value),
+                  rightTextColor: todaysPnl.isProfit ? .green : .red)
         ]
         let viewModel = BottomStickyView.StickyViewModel(collapsedViewModel: collapsedViewModel,
                                                          title: GlobalConstants.pnlString,
-                                                         rightText: .rupee(todaysPnl.value),
-                                                         rightTextColor: todaysPnl.isProfit ? .green : .red)
+                                                         rightText: .rupee(totalPNL.value),
+                                                         rightTextColor: totalPNL.isProfit ? .green : .red)
         return viewModel
     }
 }

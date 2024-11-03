@@ -16,6 +16,7 @@ class ViewController: UIViewController {
         tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
+    var total = Double.zero
     
     private let bottomStickyView = BottomStickyView()
     
@@ -30,6 +31,7 @@ class ViewController: UIViewController {
                 self.bottomStickyView.setData(viewModel: self.viewModel.getStickyViewModel())
             }
         }
+        
         configureUI()
     }
     
@@ -48,9 +50,9 @@ class ViewController: UIViewController {
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
             $0.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         }
-        
-//        bottomStickyView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-    }
+        navigationItem.title = "Portfolio"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        }
     
     private func setupTableView() {
         tableView.delegate = self
@@ -58,7 +60,7 @@ class ViewController: UIViewController {
         tableView.register(HoldingCell.self,
                            forCellReuseIdentifier: HoldingCell.self.description())
         tableView.allowsSelection = false
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 150, right: 0)
     }
 }
 
@@ -71,13 +73,14 @@ extension ViewControllerTableSetters: UITableViewDelegate, UITableViewDataSource
         viewModel.collection.value.count
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let tableViewCell = tableView.dequeueReusableCell(withIdentifier: HoldingCell.self.description()) as? HoldingCell else {
             return .init()
         }
         if let data = viewModel.collection.value[safe: indexPath.row] {
             tableViewCell.setData(from: data,
-                                  calculatedPnl: viewModel.totalPNL.value)
+                                  calculatedPnl: viewModel.pnl(data))
         }
         return tableViewCell
     }

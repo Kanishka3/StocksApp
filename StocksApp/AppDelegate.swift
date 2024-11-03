@@ -11,11 +11,24 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
+    var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        return true
-    }
+       func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+           // Create the main window
+           window = UIWindow(frame: UIScreen.main.bounds)
+           
+           // Create your main view controller (replace YourViewController with your actual view controller)
+           let mainViewController = ViewController() // Replace this with your actual view controller
+           
+           // Create a navigation controller with the main view controller as its root
+           let navigationController = UINavigationController(rootViewController: mainViewController)
+           
+           // Set the navigation controller as the root view controller
+           window?.rootViewController = navigationController
+           window?.makeKeyAndVisible()
+           
+           return true
+       }
 
     // MARK: UISceneSession Lifecycle
 

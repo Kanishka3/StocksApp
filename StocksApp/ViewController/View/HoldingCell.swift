@@ -108,7 +108,7 @@ class HoldingCell: UITableViewCell {
         let prefixLabel = NSAttributedString.custom(color: .lightGray,
                                                            fontSize: GlobalConstants.smallFont,
                                                            text: GlobalConstants.pnlPrefix)
-        let pnlString = NSAttributedString.custom(color: .darkGray,
+        let pnlString = NSAttributedString.custom(color: pnl > 0 ? .green : .red,
                                                           fontSize: GlobalConstants.regularFont,
                                                           text: .rupee(pnl))
         return prefixLabel + pnlString

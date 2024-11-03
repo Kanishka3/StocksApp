@@ -12,11 +12,11 @@ extension NSAttributedString {
     /// Creates an attributed string with the specified attributes.
     static func custom(color: UIColor? = nil, fontSize: CGFloat? = nil, text: String) -> NSAttributedString {
         var attributes: [NSAttributedString.Key: Any] = [:]
-        if let color, let fontSize {
-            attributes = [
-                .foregroundColor: color,
-                .font: UIFont.systemFont(ofSize: fontSize)
-            ]
+        if let color {
+            attributes[.foregroundColor] = color
+        }
+        if let fontSize {
+            attributes[.font] = UIFont.systemFont(ofSize: fontSize)
         }
         return NSAttributedString(string: text, attributes: attributes)
     }

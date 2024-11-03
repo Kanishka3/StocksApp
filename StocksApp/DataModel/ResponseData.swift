@@ -6,18 +6,27 @@
 //
 
 
-typealias Holding = ResponseData.Holding
+public typealias Holding = ResponseData.Holding
 
-struct ResponseData: Decodable {
+public struct ResponseData: Decodable {
     let data: CollectionObject
     
     struct CollectionObject: Decodable {
         let userHolding: [Holding]
     }
     
-    struct Holding: Decodable {
-        let symbol: String
-        let quantity: Int
-        let ltp, avgPrice, close: Double
+    public struct Holding: Decodable {
+        
+        public init(symbol: String, quantity: Int, ltp: Double, avgPrice: Double, close: Double) {
+            self.symbol = symbol
+            self.quantity = quantity
+            self.ltp = ltp
+            self.avgPrice = avgPrice
+            self.close = close
+        }
+        
+        public let symbol: String
+        public let quantity: Int
+        public let ltp, avgPrice, close: Double
     }
 }

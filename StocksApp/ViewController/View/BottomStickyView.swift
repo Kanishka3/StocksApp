@@ -87,17 +87,16 @@ class BottomStickyView: UIView {
         sendSubviewToBack(collapseView)
         mainContentView.addSubviews(mainContentStack)
         mainContentStack.addArrangedSubviews(titleLabel, chevronImageView, UIView(), rightLabel)
-//        clipsToBounds = true
         
         mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         mainContentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         mainContentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        mainContentView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor).isActive = true
+        mainContentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 
         mainContentStack.leadingAnchor.constraint(equalTo: mainContentView.leadingAnchor, constant: GlobalConstants.padding).isActive = true
         mainContentStack.trailingAnchor.constraint(equalTo: mainContentView.trailingAnchor, constant: -GlobalConstants.padding).isActive = true
         mainContentStack.topAnchor.constraint(equalTo: mainContentView.topAnchor, constant: GlobalConstants.padding).isActive = true
-        mainContentStack.bottomAnchor.constraint(equalTo: mainContentView.bottomAnchor, constant: -GlobalConstants.padding).isActive = true
+        mainContentStack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor).isActive = true
         
         collapseView.bottomAnchor.constraint(equalTo: topAnchor).isActive = true
         collapseView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
@@ -112,18 +111,20 @@ class BottomStickyView: UIView {
         isCollapsed.toggle()
       
         if isCollapsed {
-            collapseView.isHidden = true
+            self.backgroundColor = .white
             UIView.animate(withDuration: 0.2) { [weak self] in
                 guard let self else { return }
+                collapseView.isHidden = true
                 self.collapseView.transform = CGAffineTransform(translationX: .zero,
                                                                 y: CGFloat(collapseView.estimatedHeight))
-                self.backgroundColor = .clear
+                self.layoutIfNeeded()
+              
             }
         } else {
+            self.backgroundColor = collapseView.backgroundColor
             UIView.animate(withDuration: 0.2, animations: { [weak self] in
                 guard let self else { return }
                 self.collapseView.isHidden = false
-                self.backgroundColor = collapseView.backgroundColor
                 self.collapseView.transform = CGAffineTransform(translationX: .zero, y: .zero)
             })
         }
@@ -140,7 +141,7 @@ class BottomStickyView: UIView {
         isCollapsed = false
         collapseView.transform = CGAffineTransform(translationX: .zero,
                                                    y: -CGFloat(collapseView.estimatedHeight))
-        collapseView.layoutIfNeeded()
+            layoutIfNeeded()
     }
     
     fileprivate class CollpasedView: UIView {
