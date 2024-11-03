@@ -10,13 +10,18 @@ import UIKit
 class ViewController: UIViewController {
     
     private let viewModel = ViewModel()
-
+    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
-    var total = Double.zero
+        
+    private let loader: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.style = .large
+        return indicator
+    }()
     
     private let bottomStickyView = BottomStickyView()
     
@@ -32,6 +37,20 @@ class ViewController: UIViewController {
             }
         }
         
+        viewModel.state.bind { [weak self] state in
+            DispatchQueue.main.async {  [weak self] in
+                guard let self else { return }
+                switch state {
+                case .loading:
+                    loader.startAnimating()
+                    loader.isHidden = false
+                default:
+                    loader.stopAnimating()
+                    loader.isHidden = true
+                }
+            }
+        }
+        
         configureUI()
     }
     
@@ -41,16 +60,19 @@ class ViewController: UIViewController {
     }
     
     private func createViews() {
-        view.addSubviews(tableView, bottomStickyView)
+        view.addSubviews(tableView, bottomStickyView, loader)
 
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
        
+        loader.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loader.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
         [bottomStickyView, tableView].forEach {
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
             $0.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         }
-        navigationItem.title = "Portfolio"
+        navigationItem.title = GlobalConstants.navTitle
         navigationController?.navigationBar.prefersLargeTitles = true
         }
     

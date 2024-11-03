@@ -41,9 +41,9 @@ class BottomStickyView: UIView {
         didSet {
             let rotationAngle: CGFloat = isCollapsed ? 0 : .pi
             let rotationTransform = CGAffineTransform(rotationAngle: rotationAngle)
-            UIView.animate(withDuration: 0.25, animations: {
-                   self.chevronImageView.transform = rotationTransform
-               })
+            UIView.animate(withDuration: GlobalConstants.animDuration) {
+                self.chevronImageView.transform = rotationTransform
+            }
         }
     }
     
@@ -81,7 +81,7 @@ class BottomStickyView: UIView {
         rightLabel.font = UIFont.systemFont(ofSize: 14)
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
-        self.addGestureRecognizer(tapGesture)
+        addGestureRecognizer(tapGesture)
         
         addSubviews(mainContentView, collapseView)
         sendSubviewToBack(collapseView)
@@ -102,7 +102,7 @@ class BottomStickyView: UIView {
         collapseView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         collapseView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         collapseView.isHidden = true
-        collapseViewHeight = collapseView.heightAnchor.constraint(equalToConstant: 200)
+        collapseViewHeight = collapseView.heightAnchor.constraint(equalToConstant: 200) // random number now. will be changed later
         collapseViewHeight?.isActive = true
     }
 
@@ -112,17 +112,15 @@ class BottomStickyView: UIView {
       
         if isCollapsed {
             self.backgroundColor = .white
-            UIView.animate(withDuration: 0.2) { [weak self] in
+            UIView.animate(withDuration: GlobalConstants.animDuration) { [weak self] in
                 guard let self else { return }
                 collapseView.isHidden = true
                 self.collapseView.transform = CGAffineTransform(translationX: .zero,
                                                                 y: CGFloat(collapseView.estimatedHeight))
-                self.layoutIfNeeded()
-              
             }
         } else {
             self.backgroundColor = collapseView.backgroundColor
-            UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            UIView.animate(withDuration: GlobalConstants.animDuration, animations: { [weak self] in
                 guard let self else { return }
                 self.collapseView.isHidden = false
                 self.collapseView.transform = CGAffineTransform(translationX: .zero, y: .zero)
@@ -138,22 +136,22 @@ class BottomStickyView: UIView {
         }
         collapseView.setData(items: viewModel.collapsedViewModel)
         collapseViewHeight?.constant = collapseView.estimatedHeight
-        isCollapsed = false
         collapseView.transform = CGAffineTransform(translationX: .zero,
-                                                   y: -CGFloat(collapseView.estimatedHeight))
-            layoutIfNeeded()
+                                                   y: CGFloat(collapseView.estimatedHeight))
+        layoutIfNeeded()
     }
     
     fileprivate class CollpasedView: UIView {
         
-        var verticalStackView = {
+        private var verticalStackView = {
             let stackView = UIStackView()
             stackView.axis = .vertical
+            stackView.distribution = .fillEqually
             stackView.spacing = 10
             return stackView
         }()
         
-        let dividerView: UIView = {
+        private let dividerView: UIView = {
             let divider = UIView()
             divider.backgroundColor = .gray
             return divider
@@ -171,7 +169,7 @@ class BottomStickyView: UIView {
             createView()
         }
         
-        func createView() {
+        private func createView() {
             layer.cornerRadius = GlobalConstants.cornerRadius
             layer.maskedCorners = .top
             backgroundColor = .secondarySystemBackground
@@ -203,7 +201,8 @@ class BottomStickyView: UIView {
         var estimatedHeight: CGFloat {
             guard items.count > 1 else { return LabelStackView.estimatedHeight }
             let count = CGFloat(items.count)
-            return (count * LabelStackView.estimatedHeight) + ((count - 1) * 10) + 24
+            let verticalPadding = GlobalConstants.padding * 2
+            return (count * LabelStackView.estimatedHeight) + ((count - 1) * GlobalConstants.interitemSpacing) + verticalPadding
         }
     }
 }

@@ -25,8 +25,11 @@ enum GlobalConstants {
     static let totalInvestment = "Total Investment*"
     static let totalPnl = "Today's Profit & Loss"
     
-    static let chevronUp = "chevron.up"
     static let chevronDown = "chevron.down"
     
+    static let navTitle = "Portfolio"
+    
     static let cornerRadius = CGFloat(16)
+    
+    static let animDuration = TimeInterval(0.2)
 }
