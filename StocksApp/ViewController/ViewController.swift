@@ -31,7 +31,8 @@ class ViewController: UIViewController {
         viewModel.fetchData()
         viewModel.collection.bind { [weak self] _ in
             guard let self else { return }
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return } 
                 self.tableView.reloadData()
                 self.bottomStickyView.setData(viewModel: self.viewModel.getStickyViewModel())
             }

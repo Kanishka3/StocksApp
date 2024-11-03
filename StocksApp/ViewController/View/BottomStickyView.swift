@@ -41,8 +41,8 @@ class BottomStickyView: UIView {
         didSet {
             let rotationAngle: CGFloat = isCollapsed ? 0 : .pi
             let rotationTransform = CGAffineTransform(rotationAngle: rotationAngle)
-            UIView.animate(withDuration: GlobalConstants.animDuration) {
-                self.chevronImageView.transform = rotationTransform
+            UIView.animate(withDuration: GlobalConstants.animDuration) { [weak self] in
+                self?.chevronImageView.transform = rotationTransform
             }
         }
     }
